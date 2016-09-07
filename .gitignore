@@ -1,0 +1,38 @@
+### Java ###
+*.class
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+/.idea/*
+target
+*.iml
+
+# IntelliJ
+out/
+/cm-war/target/
+/frontend/target/
+/gate-pvplus/target/
+/rest/target/
+/topology/target/
+
+/target/
+/logs/
+
+# Eclipse
+.classpath
+.project
+.settings/
+/bin/
+.loadpath
+
+
+#Other
+/center-mind-config/
+/common-utils/center-mind-config-test/
+.DS_Store

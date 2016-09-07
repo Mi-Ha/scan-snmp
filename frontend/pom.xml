@@ -1,0 +1,62 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>example.group.sd</groupId>
+    <artifactId>frontend</artifactId>
+    <packaging>jar</packaging>
+    <version>0.1-SNAPSHOT</version>
+    <url>http://maven.apache.org</url>
+
+    <parent>
+        <groupId>example.group.sd</groupId>
+        <artifactId>scan-parent</artifactId>
+        <version>0.1-SNAPSHOT</version>
+        <relativePath>../scan-parent</relativePath>
+    </parent>
+
+    <build>
+        <plugins>
+            <!--plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>exec-bower-install</id>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <executable>bower</executable>
+                            <arguments>
+                                <argument>install</argument>
+                            </arguments>
+                        </configuration>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin-->
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.2</version>
+                <!--<version>2.3-SNAPSHOT</version>-->
+
+                <configuration>
+                    <port>9090</port>
+                    <path>/</path>
+                    <addContextWarDependencies>true</addContextWarDependencies>
+                </configuration>
+            </plugin>
+
+
+        </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+    </build>
+    <repositories>
+       
+    </repositories>
+</project>

@@ -1,0 +1,10 @@
+.gradle
+.settings
+build
+bin
+*.class
+.project
+.classpath
+src/main/resources/dev.persistence.properties
+src/main/resources/META-INF/hibernate-dev.properties.xml
+*.*~

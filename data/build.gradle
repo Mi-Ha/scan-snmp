@@ -1,0 +1,112 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+
+    ext.spring_boot_version = '1.2.6.RELEASE';
+    ext.spring_version = '4.2.1.RELEASE';
+
+
+	testCompile 'junit:junit:4.12'	
+
+    //spring
+    compile "org.springframework.boot:spring-boot-starter-parent:${spring_boot_version}"
+	compile "org.springframework.boot:spring-boot-starter-data-jpa:${spring_boot_version}"
+    compile "org.springframework.boot:spring-boot-starter-logging:${spring_boot_version}"   
+    compile 'org.springframework.data:spring-data-jpa:1.9.0.RELEASE'    
+	
+	compile "org.springframework:spring-test:${spring_version}"
+	
+
+    //compile "org.springframework:spring-core:${spring_version}"
+    //compile "org.springframework:spring-context:${spring_version}"
+    //compile 'com.fasterxml.jackson.core:jackson-annotations:2.5.1'
+    
+    
+    //database
+    //compile 'org.hsqldb:hsqldb:2.3.3'
+    compile 'mysql:mysql-connector-java:5.1.36'
+    compile 'postgresql:postgresql:9.1-901-1.jdbc4'
+    
+    
+    //compile 'org.neo4j.app:neo4j-server:2.2.5'
+    compile 'org.springframework.data:spring-data-neo4j:4.0.0.RELEASE' // make versions conflict on spring-data-commons?
+    //compile 'org.projectlombok:lombok:1.16.6'
+    //testCompile 'org.neo4j.test:neo4j-harness:2.2.5'
+    
+
+    
+    //providedCompile
+    //providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
+
+
+    //compile group: 'postgresql', name: 'postgresql', version: '9.1-901.jdbc4'
+
+    //compile 'com.fasterxml.jackson.core:jackson-annotations:2.3.2'
+	
+    //compile "com.mangofactory:swagger-springmvc:1.0.0"
+    
+    //logging
+    compile 'commons-io:commons-io:2.4'
+    compile 'ch.qos.logback:logback-classic:1.1.2'    
+    compile 'org.slf4j:jul-to-slf4j:1.7.6'     
+    compile 'com.google.guava:guava:18.0'
+    compile 'commons-codec:commons-codec:1.10'
+    
+    
+    
+	
+}
+
+task execute(type:JavaExec) {
+   main = "com.rit.dispatcher.SimpleConfiguration"
+   classpath = sourceSets.main.runtimeClasspath
+}
+
+
+/*
+sourceSets {
+    test {
+        java {
+            srcDirs = ["src/test"]  
+        }
+    }
+}
+*/
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.11'
+}
+
+task copyDependencies(type: Copy) {
+   from configurations.compile
+   into 'dependencies'
+}
+
+//scp build/libs/smms_db.jar ks@172.18.98.18:/var/www/html/smms/
+
+task share_jar(type:Exec) { 
+  //commandLine = ['scp', 'build/libs/smms_db.jar', 'ks@172.18.98.18:/var/www/html/smms/']
+} 
+
+task zip_deps(type:Exec) { 
+  //commandLine = ['zip', '-r', 'dependencies.zip', 'dependencies']
+} 
+
+task share_deps(type:Exec) { 
+  //commandLine = ['scp', 'dependencies.zip', 'ks@172.18.98.18:/var/www/html/smms/']
+} 
+
+share_jar.dependsOn jar
+share_deps.dependsOn zip_deps
+
+task share(type:Exec) { 
+  commandLine = ['pwd']
+} 
+share.dependsOn share_jar, share_deps
+

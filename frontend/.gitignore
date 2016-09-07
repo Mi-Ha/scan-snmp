@@ -1,0 +1,35 @@
+### Java ###
+*.class
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+/.idea/*
+/target/*
+*.iml
+
+# IntelliJ
+out/
+
+/target/
+/logs/
+/data/
+
+# Eclipse
+/.classpath
+/.project
+/.settings/
+/bin/
+
+
+#Other
+/src/main/resources/frontend/bower/
+/node_modules/
+/po/template.pot
+package.json
+/src/main/resources/frontend/js/translations.js

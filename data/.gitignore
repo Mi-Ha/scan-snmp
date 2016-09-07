@@ -1,0 +1,19 @@
+bin
+build
+target
+*~
+.project
+.classpath
+.settings
+.gradle
+*.log
+
+# Properties Files #
+
+
+/src/main/resources/dev.data.application.properties
+resources/data.application.properties
+
+src/main/resources/dev.data.application.properties
+*.properties
+
