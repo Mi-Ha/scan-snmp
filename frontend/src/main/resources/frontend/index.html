@@ -1,10 +1,67 @@
 <!DOCTYPE html>
-<html lang="en">
+<html ng-app="scannerSNMP">
 <head>
-    <meta charset="UTF-8">
-    <title></title>
+    <title>Scanner SNMP</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+    <link rel="stylesheet" href="/bower/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/bower/bootstrap/dist/css/bootstrap-theme.css">
+    <link rel="stylesheet" href="/bower/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/bower/bootstrap-social/bootstrap-social.css">
+    <link rel="stylesheet" href="/bower/bootstrap-datepicker/dist/css/bootstrap-datepicker3.css">
+
+    <script type="text/javascript" src="bower/angular/angular.js"></script>
+    <script src="/bower/angular-resource/angular-resource.js"></script>
+    <script src="/bower/angular-route/angular-route.js"></script>
+    <script type="text/javascript" src="modules/scanApp.js"></script>
+    <script type="text/javascript" src="services/scannerService.js"></script>
+    <script type="text/javascript" src="controllers/scanCtrl.js"></script>
+
+    <style>
+        h2 {
+            background: #D9FFAD; /* Цвет фона под заголовком */
+            color: #0B481E; /* Цвет текста */
+            padding: 2px; /* Поля вокруг текста */
+        }
+
+        h5 {
+            background: #EAFED4;
+            color: #0B481E;
+            padding: 2px;
+        }
+    </style>
+
 </head>
-<body>
-<h1>Start Tomcat FRONT</h1>
+
+
+<body ng-controller="scanCtrl" ng-init="init()">
+
+<div style="backgroung-color: #3366CC; ">
+    <h2 align="center">SCANNER SNMP</h2>
+</div>
+
+<div class="panel_devices">
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>IP</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="device in devices">
+            <td>{{device.ip}}</td>
+            <td>{{device.description}}</td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
+<div>
+    <h5>Обновлений:    {{counter}}</h5>
+</div>
+
 </body>
 </html>

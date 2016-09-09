@@ -13,7 +13,7 @@ import java.util.UUID;
 public interface DeviceRepository extends CrudRepository<Device, Long> {
 
     //@Transactional
-    @Query("select i from Device i")
+    @Query("select i from Device i order by ip")
     public List<Device> getAllDevices();
 
     //@Transactional
