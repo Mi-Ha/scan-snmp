@@ -11,9 +11,9 @@ target
 # Properties Files #
 
 
-/src/main/resources/dev.data.application.properties
-resources/data.application.properties
+#/src/main/resources/dev.data.application.properties
+#resources/data.application.properties
 
-src/main/resources/dev.data.application.properties
-*.properties
+#src/main/resources/dev.data.application.properties
+#*.properties
 
