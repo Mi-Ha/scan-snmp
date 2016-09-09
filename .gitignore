@@ -15,11 +15,8 @@ target
 
 # IntelliJ
 out/
-/cm-war/target/
 /frontend/target/
-/gate-pvplus/target/
 /rest/target/
-/topology/target/
 
 /target/
 /logs/
@@ -27,12 +24,10 @@ out/
 # Eclipse
 .classpath
 .project
-.settings/
+#.settings/
 /bin/
 .loadpath
 
 
 #Other
-/center-mind-config/
-/common-utils/center-mind-config-test/
-.DS_Store
+#.DS_Store
