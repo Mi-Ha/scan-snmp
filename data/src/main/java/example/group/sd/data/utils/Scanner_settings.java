@@ -7,6 +7,7 @@ public class Scanner_settings {
 	Long netScanPeriod;
 	Long sendWorkingEvent;
 	Long waitingForPollingDevices;
+
 	public String getIp() {
 		return ip;
 	}
@@ -45,5 +46,4 @@ public class Scanner_settings {
 		this.waitingForPollingDevices = waitingForPollingDevices;
 	}
 
-	
 }

@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         transactionManagerRef = "transactionManagerRDBMS",
         basePackages = {"example.group.sd.data.repository"})
 @EnableTransactionManagement
-@PropertySource(value={"classpath:/data.application.properties", "classpath:/dev.data.application.properties"}, ignoreResourceNotFound = true)
+@PropertySource(value={"classpath:/dev.data.application.properties"}, ignoreResourceNotFound = true)
 
 public class ConfigurationRDBMS {
 
@@ -85,13 +85,10 @@ public class ConfigurationRDBMS {
 		LOG.debug("calling entityManagerFactoryRDBMS");
 
 		//isInitializeLazyStateOutsideTransactionsEnabled()
-
 		HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
 		vendorAdapter.setGenerateDdl(true);
 //		vendorAdapter.setDatabasePlatform(jpa_dialect);
-		vendorAdapter.setShowSql(true);
-
-
+		vendorAdapter.setShowSql(false);			//Отображение в консоли запросов, генерируемых hibernate
 
 		LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
 		factory.setJpaVendorAdapter(vendorAdapter);
@@ -102,10 +99,6 @@ public class ConfigurationRDBMS {
 		factory.getJpaPropertyMap().put(AvailableSettings.HBM2DDL_AUTO, jpa_ddl_auto);
 //        factory.getJpaPropertyMap().put("hibernate.enable_lazy_load_no_trans", true);
         factory.getJpaPropertyMap().put(AvailableSettings.ENABLE_LAZY_LOAD_NO_TRANS, true);
-
-//		isInitializeLazyStateOutsideTransactionsEnabled
-
-
 		factory.afterPropertiesSet();
 
 		return factory.getObject();

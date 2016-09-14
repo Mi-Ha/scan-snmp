@@ -1,0 +1,8 @@
+{
+  "smnpPort":"161",
+  "smnpTransportProtokol":"udp",
+  "smnpCOMMUNITY":"public",
+  "smnpRETRIES":"3",
+  "smnpTIMEOUT":"1000",
+  "smnpVersion":"version2c"
+}

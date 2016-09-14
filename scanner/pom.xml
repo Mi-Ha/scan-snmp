@@ -29,11 +29,11 @@
             <artifactId>data</artifactId>
             <version>0.1-SNAPSHOT</version>
         </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>org.jgroups</groupId>
             <artifactId>jgroups</artifactId>
             <version>${jgroups.version}</version>
-        </dependency>
+        </dependency-->
 
         <dependency>
             <groupId>log4j</groupId>

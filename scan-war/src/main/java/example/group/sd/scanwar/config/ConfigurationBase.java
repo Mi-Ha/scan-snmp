@@ -17,13 +17,6 @@ import org.springframework.web.multipart.support.MultipartFilter;
 import org.springframework.web.servlet.DispatcherServlet;
 
 @Configuration
-@ComponentScan(basePackages={
-        "example.group.sd.rest.data",
-        //"com.rit.centermind.topology",
-        "example.group.sd.scanner",
-        "example.group.sd.rest.controller",
-        "example.group.sd.rest.data"
-})
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
 @Import({example.group.sd.data.config.ConfigurationBase.class})
 public class ConfigurationBase extends SpringBootServletInitializer {

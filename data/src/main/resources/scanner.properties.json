@@ -1,0 +1,8 @@
+{
+  "ip":"172.16.48.226",
+  "networkPrefixLength":"26",
+  "getNetworkPrefixLengthFromSettings":"true",
+  "netScanPeriod":"5000",
+  "waitingForPollingDevices":"0",
+  "listIp":["127.0.0.1","172.20.6.254","172.20.6.255"]
+}

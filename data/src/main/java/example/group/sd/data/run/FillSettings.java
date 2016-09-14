@@ -1,5 +1,10 @@
 package example.group.sd.data.run;
 
+import java.io.File;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -11,6 +16,8 @@ import java.util.Set;
 
 import example.group.sd.data.entity.Device;
 import example.group.sd.data.repository.DeviceRepository;
+import example.group.sd.data.utils.ListIp_settings;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
@@ -33,9 +40,27 @@ import com.google.gson.GsonBuilder;
 public class FillSettings {
 
 	static final Logger LOG = LoggerFactory.getLogger(FillSettings.class);
-	//private static ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 	private static Gson gson = new GsonBuilder().create();
-	
+
+	String patchResources = System.getProperty("user.dir")
+			+ File.separator
+			+ "data"
+			+ File.separator
+			+ "src"
+			+ File.separator
+			+ "main"
+			+ File.separator
+			+ "resources";
+
+	String filenameScannerProperties = patchResources
+			+ File.separator
+			+ "scanner.properties.json";
+
+	String filenameSnmpProperties = patchResources
+			+ File.separator
+			+ "snmp.properties.json";
+
+
 	@Autowired
     private SettingsRepository settingsRepo;
 	
@@ -54,29 +79,17 @@ public class FillSettings {
         FillSettings bean = ctx.getBean(FillSettings.class);
         bean.Fill();
 	}
-	
+
+
 	public boolean Fill() {
 		try {
-		
-			Scanner_settings scanner_settings = new Scanner_settings();
-			scanner_settings.setIp("172.20.6.254");
-			scanner_settings.setGetNetworkPrefixLengthFromSettings(true);
-			scanner_settings.setNetworkPrefixLength(29);
-			scanner_settings.setNetScanPeriod(5000L);
-			scanner_settings.setSendWorkingEvent(5000L);
-			scanner_settings.setWaitingForPollingDevices(0L);
-			
-			Snmp_settings snmp_settings = new Snmp_settings();
-			snmp_settings.setSmnpPort(161);
-			snmp_settings.setSmnpTransportProtokol("udp");
-			snmp_settings.setSmnpCOMMUNITY("public");
-			snmp_settings.setSmnpRETRIES(3);
-			snmp_settings.setSmnpTIMEOUT(1000);
-			snmp_settings.setSmnpVersion("version2c");;
-			
+
+			Scanner_settings scanner_settings = gson.fromJson(readFileProperties(filenameScannerProperties), Scanner_settings.class);
+			Snmp_settings snmp_settings = gson.fromJson(readFileProperties(filenameSnmpProperties), Snmp_settings.class);
+			ListIp_settings listIpSettings = gson.fromJson(readFileProperties(filenameScannerProperties), ListIp_settings.class);
+
 			Settings settings = new Settings();
 			settings.setAlias("DEMO_SETTINGS");
-			
 			settings.setScanner_settings(gson.toJson(scanner_settings).toString());
 			settings.setSnmp_settings(gson.toJson(snmp_settings).toString());
 
@@ -84,17 +97,15 @@ public class FillSettings {
 			if(settingsIn != null){
 				settingsRepo.delete(settingsIn);
 			}
-			
 			settingsRepo.save(settings);
 			
-			//String []arrStrIp = {};
-			String []arrStrIp = {"127.0.0.1","172.20.6.254","172.20.6.255"};
-
-			for(String strIp : arrStrIp){
-				ListIp listIp = new ListIp();
-				listIp.setIp(strIp);
-				listIp.setSettings(settings);
-				listIpRepo.save(listIp);
+			if(listIpSettings != null) {
+				for (String strIp : listIpSettings.getListIp()) {
+					ListIp listIp = new ListIp();
+					listIp.setIp(strIp);
+					listIp.setSettings(settings);
+					listIpRepo.save(listIp);
+				}
 			}
 
 			LOG.info("  ***  Settings is complected!  ***  ");
@@ -109,4 +120,29 @@ public class FillSettings {
 		return true;
 	}
 
+	String readFileProperties(String fileName){
+
+		try {
+			File file = new File(fileName);
+			if(file.exists() ){
+
+				List<String> lines = Files.readAllLines(Paths.get(fileName), StandardCharsets.UTF_8);
+				String strFromFile = "";
+				for(String line: lines){
+					strFromFile = strFromFile.concat(line);
+				}
+				return strFromFile;
+			} else {
+				throw new java.lang.Exception("File " + fileName + " is not exists.");
+			}
+
+		} catch (Exception e) {
+
+			LOG.error("Error in function Fill(), function readFileProperties");
+			LOG.error(e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+
+	}
 }

@@ -44,7 +44,5 @@ public class Snmp_settings {
 	public void setSmnpVersion(String smnpVersion) {
 		this.smnpVersion = smnpVersion;
 	}
-	
-	
-	
+
 }
