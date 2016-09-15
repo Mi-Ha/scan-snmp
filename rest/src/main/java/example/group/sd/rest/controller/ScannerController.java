@@ -6,6 +6,7 @@ import example.group.sd.data.entity.Device;
 
 import example.group.sd.data.repository.DeviceRepository;
 
+import example.group.sd.rest.ResponseWrapperBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,14 +33,42 @@ public class ScannerController {
     @ResponseBody
     public String getAllDevices() {
 
-        List<Device> listDev = deviceRepo.getAllDevices();
-        String res = null;
+        try {
+            List<Device> listDev = deviceRepo.getAllDevices();
+            String res = null;
 
-        if((listDev!=null)&&(listDev.size()>0)) {
-            res = gson.toJson(listDev);
+            if((listDev!=null)&&(listDev.size()>0)) {
+
+                return successfulCompletion(listDev, "OK", "getAllDevices is completed successfully");
+            }
+
+            return successfulCompletion(null, "OK", "getAllDevices is completed successfully");
+
+        } catch (Exception e) {
+            return unsuccessfulEnd(e);
+        }
+    }
+
+    String successfulCompletion(Object obj, String strCode, String strMessage) {
+
+        try {
+            String strJSON = "";
+            if (obj != null)
+                strJSON = gson.toJson(obj);
+            else
+                strJSON = "";
+            return gson.toJson(new ResponseWrapperBuilder().setData(strJSON).info(strCode, strMessage).build());
+
+        } catch (Exception e) {
+            return unsuccessfulEnd(e);
         }
 
-        return res;
+    }
+
+
+    String unsuccessfulEnd(Exception e) {
+        LOG.error(e.getMessage());
+        return gson.toJson(new ResponseWrapperBuilder().setException(new Exception(e)).build());
     }
 
 }

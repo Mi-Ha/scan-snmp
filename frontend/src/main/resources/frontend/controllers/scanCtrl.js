@@ -22,7 +22,11 @@ angular.module('scannerSNMP')
 
         $scope.getListDevices = function () {
             scannerService.getAllDevices().then(function (dataResponse) {
-                $scope.devices = dataResponse.data;
+
+                //if (dataResponse.data.messages[0].code.localeCompare('OK') == true) {
+                if (dataResponse.data.success == true) {
+                    $scope.devices = JSON.parse(dataResponse.data.data);
+                }
             });
         }
 
