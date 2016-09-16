@@ -3,6 +3,7 @@
 #Запуск приложения
 
 Перед запуском приложения следует:
+
 1. Создать базу данных PostgreSQL с именем "scan_snmp"
 1. Настроить подключение к БД в файле dev.data.application.properties (модуль data, папка resources).
 1. Залить бэкап из файла scan_snmp.backup (если СУБД - PostgreSQL), либо запустить на выполнение два файла (модуль data, пакет example.group.sd.data.run): сначала DropCreateDatabaseScheme, затем FillSettings.
@@ -24,11 +25,11 @@
 * listIp":["127.0.0.1"] - список IP адресов, которые будут опрашиваться по SNMP протоколу. Если список не задан, то адреса будут вычислены в соответствии с параметром networkPrefixLength.
 
 ###Настроечные параметры протокола SNMP:
-smnpPort - порт для опроса по SNMP протоколу
-smnpTransportProtokol - протокол ("udp", "tcp")
-smnpCOMMUNITY - наименование группы
-smnpRETRIES - число попыток опроса одного устройства
-smnpTIMEOUT - время ожидания ответа от устройства, мс
-smnpVersion - версия SNMP
+* smnpPort - порт для опроса по SNMP протоколу
+* smnpTransportProtokol - протокол ("udp", "tcp")
+* smnpCOMMUNITY - наименование группы
+* smnpRETRIES - число попыток опроса одного устройства
+* smnpTIMEOUT - время ожидания ответа от устройства, мс
+* smnpVersion - версия SNMP
 
 После корректровки настроечных файлов следует перезалить их в базу данных (запустить файл FillSettings)
