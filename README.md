@@ -3,9 +3,8 @@
 #Запуск приложения
 
 Перед запуском приложения следует:
-<li>
-1. Создать базу данных PostgreSQL с именем "scan_snmp"
-2. Настроить подключение к БД в файле dev.data.application.properties (модуль data, папка resources).
+<li 1.>Создать базу данных PostgreSQL с именем "scan_snmp"
+<li 2.> Настроить подключение к БД в файле dev.data.application.properties (модуль data, папка resources).
 3. Залить бэкап из файла scan_snmp.backup (если СУБД - PostgreSQL), либо запустить на выполнение два файла (модуль data, пакет example.group.sd.data.run): сначала DropCreateDatabaseScheme, затем FillSettings.
 <\li>
 
