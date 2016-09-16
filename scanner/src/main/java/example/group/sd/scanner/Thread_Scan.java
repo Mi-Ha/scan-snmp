@@ -75,6 +75,7 @@ public class Thread_Scan  implements ResponseListener,Runnable{
     short ipOktetMy2 = 0;
     short ipOktetMy3 = 0;
     short ipOktetMy4 = 0;
+    boolean bEndStop;                               //Признак окончания формирования конечного IP адреса
 
     ScannerBean objScannerBean;
     Set<ListIp> listIp = null;
@@ -201,24 +202,27 @@ public class Thread_Scan  implements ResponseListener,Runnable{
 
     public void run() {
 
+        StringBuilder strIP = new StringBuilder();
+
         try {
             Thread.sleep(10000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        LOGGER.debug("Start SCAN SNMP thread");
+        LOGGER.debug("*****    Start SCAN SNMP   *****");
         short cntThread = 0;
 
         while(iTrOn == 1){
 
             cntThread++;
-            LOGGER.debug("Start NET SCAN  " + cntThread);
+            LOGGER.debug("*****    Start cycle SCAN  " + cntThread + "   *****");
 
             if ((listIp!=null)&&(listIp.size()>0)) {
 
                 for(ListIp lIp : listIp){
                     sendSnmpRequest(lIp.getIp());
+                    LOGGER.debug(lIp.getIp());
                 }
 
             } else {
@@ -230,16 +234,22 @@ public class Thread_Scan  implements ResponseListener,Runnable{
                 boolean bEndScan = false;
 
                 while (!bEndScan) {
-                    sendSnmpRequest(ipOktetCur1 + "." + ipOktetCur2 + "." + ipOktetCur3 + "." + ipOktetCur4);
+                    strIP.append(ipOktetCur1 + "." + ipOktetCur2 + "." + ipOktetCur3 + "." + ipOktetCur4);
+                    sendSnmpRequest(strIP.toString());
+                    LOGGER.debug(strIP.toString());
+                    bEndScan = !getNextIp();
+                    /*
                     if ((ipOktetCur1 == ipOktetEnd1) && (ipOktetCur2 == ipOktetEnd2) && (ipOktetCur3 == ipOktetEnd3) && (ipOktetCur4 == ipOktetEnd4)) {
                         bEndScan = true;
                     } else {
                         getNextIp();
                     }
+                    */
+                    strIP.delete(0,strIP.length());
                 }
             }
 
-            LOGGER.debug("**************  thread  ******************");
+            LOGGER.debug("*****   Finish cycle SCAN  " + cntThread + "  *****");
             try {
                 Thread.sleep(10000);
             } catch (InterruptedException e) {
@@ -250,9 +260,10 @@ public class Thread_Scan  implements ResponseListener,Runnable{
 
     //Вычисляется следующий IP адрес из пула адресов.
     //"Свой" адрес исключается
-    public String getNextIp(){
+    public boolean getNextIp(){
 
         boolean bComplect = false;
+        boolean bRes = false;
 
         while(!bComplect) {
             ipOktetCur4++;
@@ -271,12 +282,16 @@ public class Thread_Scan  implements ResponseListener,Runnable{
                 }
             }
 
+            if ((ipOktetCur1 == ipOktetEnd1) && (ipOktetCur2 == ipOktetEnd2) && (ipOktetCur3 == ipOktetEnd3) && (ipOktetCur4 == ipOktetEnd4)) {
+                return false;
+            }
+
             if((ipOktetCur1 == ipOktetMy1)&&(ipOktetCur2 == ipOktetMy2)&&(ipOktetCur3 == ipOktetMy3)&&(ipOktetCur4 == ipOktetMy4))
                 bComplect = false;
             else
                 bComplect = true;
         }
-        return ipOktetCur1 + "." + ipOktetCur2 + "." + ipOktetCur3 + "." + ipOktetCur4;
+        return true; //ipOktetCur1 + "." + ipOktetCur2 + "." + ipOktetCur3 + "." + ipOktetCur4;
 
     }
 
@@ -338,7 +353,7 @@ public class Thread_Scan  implements ResponseListener,Runnable{
         }
 
     }
-
+/*
     //Функция автоматического получения "своих" IP адреса и маски сети
     public boolean  getIpAuto(){
 
@@ -413,19 +428,15 @@ public class Thread_Scan  implements ResponseListener,Runnable{
         return bGetIpAuto;
 
     }
-
+*/
     /*
     Функция создает пул адресов для сканирования
     Пул создается на основе "своего" IP адреса и маски подсети, получаемых из настроек или java-методами.
     */
+
     private boolean createIpPool(){
         String []strOktet = null;
 
-        if(!discoveryGetNetworkPrefixLengthFromSettings){
-
-            if(!bGetIpAuto)
-                return false;
-        }
 
         if(strMyIp.length()<7){
             LOGGER.error("ERROR in function 'createIpPool': bad IP address = " + strMyIp);
@@ -441,7 +452,7 @@ public class Thread_Scan  implements ResponseListener,Runnable{
             LOGGER.debug("ERROR in function createIpDiapazone: strOktet is null");
             return false;
         }
-        if((discoveryNetworkPrefixLength < 0)|| (discoveryNetworkPrefixLength > 32)) {
+        if((discoveryNetworkPrefixLength < 0)|| (discoveryNetworkPrefixLength > 31)) {
             LOGGER.debug("ERROR in function createIpDiapazone: bad NetworkPrefixLength");
             return false;
         }
@@ -463,22 +474,77 @@ public class Thread_Scan  implements ResponseListener,Runnable{
         short oktetMask3 = (short) ((iMask>>8) & 255);
         short oktetMask4 = (short) (iMask & 255);
 
+
         //Определяем стартовый и конечный адреса
         ipOktetStart1 = (short) ((short) ipOktetMy1&(~oktetMask1));
         ipOktetStart2 = (short) ((short) ipOktetMy2&(~oktetMask2));
         ipOktetStart3 = (short) ((short) ipOktetMy3&(~oktetMask3));
         ipOktetStart4 = (short) ((short) ipOktetMy4&(~oktetMask4));
 
-        ipOktetEnd1 = (short) (ipOktetStart1|oktetMask1);
-        ipOktetEnd2 = (short) (ipOktetStart2|oktetMask2);
-        ipOktetEnd3 = (short) (ipOktetStart3|oktetMask3);
-        ipOktetEnd4 = (short) (ipOktetStart4|oktetMask4);
+//        ipOktetEnd1 = (short) (ipOktetStart1|oktetMask1);
+//        ipOktetEnd2 = (short) (ipOktetStart2|oktetMask2);
+//        ipOktetEnd3 = (short) (ipOktetStart3|oktetMask3);
+//        ipOktetEnd4 = (short) (ipOktetStart4|oktetMask4);
 
-        if(ipOktetStart4<255) ipOktetStart4++;
-        if(ipOktetEnd4>0) ipOktetEnd4--;
+        ipOktetEnd1 = ipOktetStart1;
+        ipOktetEnd2 = ipOktetStart2;
+        ipOktetEnd3 = ipOktetStart3;
+        ipOktetEnd4 = ipOktetStart4;
+
+        ipOktetEnd4 = checkOktetEnd(ipOktetEnd4);
+        if(!bEndStop) ipOktetEnd3 = checkOktetEnd(ipOktetEnd3);
+        if(!bEndStop) ipOktetEnd2 = checkOktetEnd(ipOktetEnd2);
+        if(!bEndStop) ipOktetEnd1 = checkOktetEnd(ipOktetEnd1);
+
+        if(ipOktetStart4<253) ipOktetStart4++;
+        //if(ipOktetEnd4>0) ipOktetEnd4--;
+
+        boolean bPoolCorrect = false;
+        if( ipOktetStart1<= ipOktetEnd1){
+            if( ipOktetStart2<= ipOktetEnd2){
+                if( ipOktetStart3<= ipOktetEnd3){
+                    if( ipOktetStart4< ipOktetEnd4){
+                        bPoolCorrect = true;
+                    }
+                }
+            }
+        }
+        if(!bPoolCorrect){
+            ipOktetEnd1 = ipOktetStart1;
+            ipOktetEnd2 = ipOktetStart2;
+            ipOktetEnd3 = ipOktetStart3;
+            ipOktetEnd4 = ipOktetStart4;
+            if(ipOktetEnd4<255) ipOktetEnd4++;
+            else{
+                LOGGER.debug("ERROR in function createIpDiapazone: bad address pool");
+                return false;
+            }
+        }
 
         LOGGER.info("Start IP address: " + ipOktetStart1 + "." + ipOktetStart2 + "." + ipOktetStart3 + "." + ipOktetStart4);
         LOGGER.info("End IP address: " + ipOktetEnd1 + "." + ipOktetEnd2 + "." + ipOktetEnd3 + "." + ipOktetEnd4);
         return true;
+    }
+
+    short checkOktetEnd(short oktet){
+
+        int oktetWork = oktet;
+        int maskEnd = 1;
+
+        for(short ind = 0; ind<8; ind++){
+
+            int iCheck = oktetWork&maskEnd;
+            if( iCheck == 0 ) {
+
+                oktetWork = oktetWork|maskEnd;
+                maskEnd = maskEnd<<1;
+
+            } else {
+                bEndStop = true;
+                return (short)oktetWork;
+            }
+        }
+
+        return (short)oktetWork;
     }
 }

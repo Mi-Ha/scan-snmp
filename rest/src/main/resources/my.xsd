@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="http://www.alfaomega.org/my/" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.alfaomega.org/my/">
+
+	<complexType name="MapStringString">
+		<sequence>
+			<element name="entry" minOccurs="0" maxOccurs="unbounded">
+				<complexType>
+					<sequence>
+						<element name="key" type="string"></element>
+						<element name="value" type="string"></element>
+					</sequence>
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+
+	<complexType name="CommonGlobalObject">
+		<sequence>
+			<element name="id" type="string" nillable="false"></element>
+			<element  name="parent" type="tns:CommonGlobalObject"></element>
+			<element name="code">
+				<simpleType>
+					<restriction base="string">
+						<maxLength value="80"></maxLength>
+					</restriction>
+				</simpleType>
+			</element>
+			<element name="title">
+				<simpleType>
+					<restriction base="string">
+						<maxLength value="250"></maxLength>
+					</restriction>
+				</simpleType>
+			</element>
+			<element  name="comment" type="string"></element>
+			<element name="versionNumber">
+				<simpleType >
+					<restriction base="long">
+					</restriction>
+				</simpleType>
+			</element>
+			<element name="versionDate" type="dateTime" nillable="false"></element>
+			<element name="properties" type="tns:MapStringString"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="MetaTypeTheType">
+		<complexContent>
+			<extension base="tns:CommonGlobalObject">
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<element name="MetaType">
+		<complexType>
+			<sequence>
+				<element  name="parent" minOccurs="0" maxOccurs="1" type="tns:MetaTypeTheType"></element>
+			</sequence>
+		</complexType>
+	</element>
+</schema>
